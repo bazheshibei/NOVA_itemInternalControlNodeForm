@@ -30,11 +30,11 @@
       <!-- 客人交期 -->
       <el-table-column prop="deliver_date" label="客人交期" width="110"></el-table-column>
 
-      <el-table-column v-for="item in nodeMapList" :key="'node_' + item.node_id" :label="item.node_name" width="170">
+      <el-table-column v-for="item in nodeMapList" :key="'node_' + item.node_id" :label="item.node_name" width="135">
         <template slot-scope="scope">
           <el-input v-if="scope.row[item.node_id] && (typeof scope.row[item.node_id].first_plant_enddate === 'string' || typeof scope.row[item.node_id].first_plant_enddate === 'object')"
-            class="comInput" :class="scope.row[item.node_id].is_quote === 1 && !scope.row[item.node_id].first_plant_enddate ? 'errorPicker' : ''" slot="reference" size="mini"
-            :placeholder="scope.row[item.node_id].is_quote === 1 ? '请输入日期' : '请输入日期或 /'"
+            class="comTimeInput" :class="scope.row[item.node_id].is_quote === 1 && !scope.row[item.node_id].first_plant_enddate ? 'errorInput' : ''" slot="reference" size="mini"
+            :placeholder="scope.row[item.node_id].is_quote === 1 ? '请输入日期' : '请输入日期或 /'" maxlength="10"
             v-model="scope.row[item.node_id].first_plant_enddate" @blur="blur(scope.$index, item.node_id)"
           ></el-input>
           <span v-else>--</span>
@@ -177,21 +177,10 @@ export default {
   margin: 5px 0;
   cursor: pointer;
 }
-
-.comInput {
-  width: 125px;
-  margin: 2px 0;
-}
 </style>
 
 <style>
 .comTable {
   border-top: 0 !important;
-}
-
-/*** 时间选择器：报错 ***/
-.errorPicker > input {
-  color: #F56C6C !important;
-  border-color: #F56C6C !important;
 }
 </style>

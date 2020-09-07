@@ -63,7 +63,7 @@ const store = new Vuex.Store({
       // const res = JSON.parse(localStorage.getItem('排计划'))
       // console.log('xxxxx ----- ', res)
       // //
-      // const { itemMapList, nodeMapList, itemids } = res.data
+      // const { itemMapList, nodeMapList, itemids } = res
       // /* 提取节点数据 */
       // itemMapList.map(function (item, index) {
       //   item.nodeTemplateMapList.forEach(function (val) {

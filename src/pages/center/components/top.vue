@@ -14,11 +14,9 @@
       <div class="formTextBox">
         <div class="formText">
           <span>本次提报项目：</span>
-          <el-popover popper-class="comPopover" :visible-arrow="false" placement="bottom" trigger="hover" :content="itenames">
-            <el-input class="comInput" size="mini" :value="itenames" disabled slot="reference">
-              <el-button slot="append" @click="chooseProject">选择项目</el-button>
-            </el-input>
-          </el-popover>
+          <el-input class="comInput" size="mini" :value="itenames" disabled slot="reference">
+            <el-button slot="append" class="comInputBtnRight" size="mini" @click="chooseProject">选择项目</el-button>
+          </el-input>
           <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
           <el-button type="primary" size="mini" @click="createdTable">创建</el-button>
           <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
@@ -80,47 +78,12 @@ export default {
   flex: 1;
 }
 
-/*** 表单 ***/
-.formLine { /* 单行 */
-  width: 100%;
-  font-size: 12px;
-  display: flex;
-}
-.formLabel { /* 标题 */
-  width: 90px;
-  min-width: 90px;
-  min-height: 34px;
-  white-space: nowrap;
-  padding: 0 4px;
-  border-right: 1px solid #DCDFE6;
-  border-bottom: 1px solid #DCDFE6;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-}
-.formTextBox {
-  display: flex;
-  flex-wrap: wrap;
-  flex: 1;
-}
-.formText { /* 值 */
-  white-space: nowrap;
-  padding: 6px 10px;
-  border-right: 1px solid #DCDFE6;
-  border-bottom: 1px solid #DCDFE6;
-  display: flex;
-  align-items: center;
-  flex: 1;
-}
 .otherText {
   min-width: 200px;
   white-space: pre-wrap;
 }
 .comSelectOptions { /* 下拉框：选项 */
   margin-top: -3px;
-}
-.red {
-  color: #F56C6C;
 }
 .otherModelBox { /* 其他模板 */
   display: flex;

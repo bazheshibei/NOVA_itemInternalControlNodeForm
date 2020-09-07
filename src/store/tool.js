@@ -148,22 +148,24 @@ Tool._toggleTime = function (time) {
  * @param {[String]} minVal       最小值
  * @param {[String]} plantVal     计划时间
  * @param {[String]} order_time   下单日期
- * @param {[String]} deliver_date 交货日期
+ * @param {[String]} deliver_date 客人交期
  */
 Tool._isError = function (maxVal = '', minVal = '', plantVal = '', order_time = '', deliver_date = '') {
   const max = isNaN(new Date(maxVal).getTime()) ? 0 : new Date(maxVal).getTime() //       最大值
   const min = isNaN(new Date(minVal).getTime()) ? 0 : new Date(minVal).getTime() //       最小值
   const plant = isNaN(new Date(plantVal).getTime()) ? 0 : new Date(plantVal).getTime() // 计划时间
   const order = new Date(order_time).getTime() //                                         下单日期
-  const deliver = new Date(deliver_date).getTime() //                                     交货日期
-  const num_1 = min || order //   边界值：最小
-  const num_2 = max || deliver // 边界值：最大
-  const time_1 = this._returnYearMonthDay(num_1)
-  const time_2 = this._returnYearMonthDay(num_2)
-  if (num_1 && num_2 && (num_1 <= plant && plant <= num_2)) {
-    return { status: false, maxMinText: `最早：${time_1}，最晚：${time_2}` }
+  const deliver = new Date(deliver_date).getTime() //                                     客人交期
+  const countMax = max || deliver
+  const countMin = min || order
+  const time_1 = this._returnYearMonthDay(countMin)
+  const time_2 = this._returnYearMonthDay(countMax)
+  const maxMinText = `最早：${time_1 === '1970-01-01' ? '未知' : time_1}，最晚：${time_2 === '1970-01-01' ? '未知' : time_2}` // 提示文字
+  /* 返回 */
+  if (countMin && countMax && (countMin <= plant && plant <= countMax)) {
+    return { status: false, maxMinText }
   } else {
-    return { status: true, maxMinText: `最早：${time_1}，最晚：${time_2}` }
+    return { status: true, maxMinText }
   }
 }
 /**
