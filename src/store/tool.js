@@ -66,19 +66,20 @@ Tool.returnDatalist = function (list = [], nodeList = [], state) {
  * @param {[Object]} nodeCodeObj 当前项目的节点值 { ${变量}: 自身时间 }
  */
 Tool._returnTime = function (str = '', nodeCodeObj = {}) {
-  const numStr = str.replace(/\$\{[\w-_:/]+\}/g, function (name) {
+  const asd = str.replace(/\$\{[\w-_:/]+\}/g, function (name) {
     return nodeCodeObj[name] ? new Date(nodeCodeObj[name]).getTime() : 0
-  }).replace(/[0-9]+/g, function (num, index) {
+  })
+  const numStr = asd.replace(/[0-9]+/g, function (num, index) {
     if (num.length < 13) {
       let isChange = true
       let beforeStr = ''
       let afterStr = ''
       let numStr = 0
       if (index !== 0) {
-        beforeStr = str[index - 1]
+        beforeStr = asd[index - 1]
       }
-      if (index + num.length !== str.length) {
-        afterStr = str[index + num.length]
+      if (index + num.length !== asd.length) {
+        afterStr = asd[index + num.length]
       }
       if (beforeStr === '*' || beforeStr === '/' || afterStr === '*' || afterStr === '/') {
         isChange = false
@@ -96,9 +97,9 @@ Tool._returnTime = function (str = '', nodeCodeObj = {}) {
   // eslint-disable-next-line
   const timeStr = eval(numStr)
   if (isNaN(timeStr)) {
-    return '/'
+    return ''
   } else if (new Date(timeStr).getTime() < new Date('2000-01-01').getTime()) {
-    return '/'
+    return ''
   } else {
     const d = new Date(timeStr)
     const year = d.getFullYear()
