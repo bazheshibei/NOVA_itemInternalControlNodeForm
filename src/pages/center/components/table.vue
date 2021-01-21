@@ -4,9 +4,8 @@
 <template>
   <div class="comTableBox" ref="comTableBox">
 
-    <el-table class="comTable" :data="projectList" size="mini" border :height="tableHeight"
-      v-for="(table, tableIndex) in tableArr" :key="'table_' + table" v-show="tableIndex === tableArr.length - 1"
-    >
+    <!-- v-for="(table, tableIndex) in tableArr" :key="'table_' + table" v-show="tableIndex === tableArr.length - 1" -->
+    <el-table class="comTable" :data="projectList" size="mini" border :height="tableHeight">
       <!-- 操作 -->
       <el-table-column label="操作" width="80">
         <template slot-scope="scope">
@@ -30,13 +29,18 @@
       <!-- 客人交期 -->
       <el-table-column prop="deliver_date" label="客人交期" width="110"></el-table-column>
 
-      <el-table-column v-for="item in nodeMapList" :key="'node_' + item.node_id" :label="item.node_name" width="140">
+      <el-table-column v-for="item in nodeMapList" :key="'node_' + item.node_id" :label="item.node_name" width="150">
         <template slot-scope="scope">
-          <el-input v-if="_isInputEdit(scope.row, item)"
-            class="comTimeInput" slot="reference" size="mini"
-            placeholder="请输入日期或 /" maxlength="10"
-            v-model="scope.row[item.node_id].first_plant_enddate" @blur="blur(scope.$index, item.node_id)"
-          ></el-input>
+          <div v-if="_isInputEdit(scope.row, item)">
+            <!-- 计划完成：文本节点 -->
+            <el-input v-if="_isContentNode(scope.row, item)" class="comTimeInput" size="mini" placeholder="请输入文字内容" maxlength="200"
+              v-model="scope.row[item.node_id].first_plant_enddate" @blur="blur(scope.$index, item.node_id)"
+            ></el-input>
+            <!-- 计划完成：时间节点 -->
+            <el-input v-else class="comTimeInput" size="mini" placeholder="请输入日期或 /" maxlength="10"
+              v-model="scope.row[item.node_id].first_plant_enddate" @blur="blur(scope.$index, item.node_id)"
+            ></el-input>
+          </div>
           <span v-else>--</span>
         </template>
       </el-table-column>
@@ -64,19 +68,30 @@ export default {
     ...mapState(['projectList', 'nodeMapList', 'tableArr'])
   },
   methods: {
-    blur(index, name) {
+    /**
+     * [输入框失焦]
+     * @param {[Int]}    index   项目索引
+     * @param {[String]} node_id 节点ID
+     */
+    blur(index, node_id) {
       const { projectList } = this
-      const time = Tool._toggleTime(projectList[index][name].first_plant_enddate)
-      const { order_time, deliver_date } = projectList[index]
-      const time_1 = new Date(order_time).getTime()
-      const time_2 = new Date(deliver_date).getTime()
-      const num = new Date(time).getTime()
-      if ((time_1 <= num && num <= time_2) || time === '/' || time === '') {
-        // (在区间内) || (节点没被引用 && '/') || (没输入时间)
-        this.projectList[index][name].first_plant_enddate = time
-      } else {
-        this.$message.error('请输入 下单日期 和 客人交期 之间的时间')
-        this.projectList[index][name].first_plant_enddate = ''
+      const { first_plant_enddate, node_content_type } = projectList[index][node_id]
+      if (node_content_type === 'time' || node_content_type !== 'content') {
+        /* ----- 时间节点 ----- */
+        const time = Tool._toggleTime(first_plant_enddate)
+        const { order_time, deliver_date } = projectList[index]
+        const time_1 = new Date(order_time).getTime() //   下单日期
+        const time_2 = new Date(deliver_date).getTime() // 客人交期
+        const num = new Date(time).getTime() //            当前时间
+        if ((time_1 <= num && num <= time_2) || time === '/' || time === '') { // 保存日期：(在区间内) || 不填 || 没输入时间
+          this.projectList[index][node_id].first_plant_enddate = time
+        } else { // 重置日期
+          this.$message.error('请输入 下单日期 和 客人交期 之间的时间')
+          this.projectList[index][node_id].first_plant_enddate = ''
+        }
+      } else if (node_content_type === 'content') {
+        /* ----- 文本节点 ----- */
+        this.projectList[index][node_id].first_plant_enddate = first_plant_enddate
       }
     },
     /**
@@ -90,6 +105,22 @@ export default {
       this.$store.commit('saveData', { name: 'projectList', obj: projectList })
       /** 创建新表格 **/
       this.$store.commit('createdNewTable')
+    },
+    /**
+     * [是否：文本节点]
+     * @param  {[Object]}  row  表格单行数据
+     * @param  {[Object]}  item 节点信息
+     * @return {[Boolean]}      是否显示
+     */
+    _isContentNode(row, item) {
+      const node = row[item.node_id]
+      let status = false
+      if (node) { // 有此节点
+        if (node.node_content_type === 'content') { // 文本节点
+          status = true
+        }
+      }
+      return status
     },
     /**
      * [是否：input修改]

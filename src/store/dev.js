@@ -56,7 +56,7 @@ Dev.A_getItemNodeTemple = function (state, commit, pageStatus) {
 }
 
 /**
- * [请求：投产前/排产节点提报]
+ * [请求：甘特表内控节(排计划)点提报初始化信息]
  */
 Dev.A_itemCustomNode = function (state) {
   const { projectList, nodeMapList } = state

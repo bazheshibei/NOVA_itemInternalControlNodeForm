@@ -27,14 +27,12 @@ Prod.A_getItemNodeTemple = function (state, commit, pageStatus) {
   const obj = { itemIds, type: pageType }
   const loading = '数据初始化中...'
   const suc = function (res) {
-    // console.log('res ----- ', res)
     const { data, msg, status } = res
     if (String(status) === '0') {
       // eslint-disable-next-line
       MessageBox({ title: '数据异常', message: msg, type: 'warning', closeOnClickModal: false, closeOnPressEscape: false, callback() { dg.close() } })
     } else {
       // localStorage.setItem('排计划', JSON.stringify(res))
-      //
       const { itemMapList, nodeMapList, itemids } = data
       /* 提取节点数据 */
       itemMapList.map(function (item, index) {
@@ -77,7 +75,7 @@ Prod.A_getItemNodeTemple = function (state, commit, pageStatus) {
 }
 
 /**
- * [请求：投产前/排产节点提报]
+ * [请求：甘特表内控节(排计划)点提报初始化信息]
  */
 Prod.A_itemCustomNode = function (state) {
   const { projectList, nodeMapList } = state
@@ -102,9 +100,8 @@ Prod.A_itemCustomNode = function (state) {
       if (String(status) === '0') {
         MessageBox({ title: '数据异常', message: msg, type: 'warning', closeOnClickModal: false, closeOnPressEscape: false })
       } else {
-        const loading = Loading.service({ text: '生成成功', spinner: 'el-icon-circle-check' })
+        Loading.service({ text: '生成成功', spinner: 'el-icon-circle-check' })
         setTimeout(() => {
-          loading.close()
           // eslint-disable-next-line
           dg.close()
         }, 1000)
